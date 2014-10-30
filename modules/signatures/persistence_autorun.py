@@ -25,9 +25,9 @@ class Autorun(Signature):
     severity = 3
     categories = ["persistence"]
     authors = ["Michael Boman", "nex","securitykitten"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run$",
             ".*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce$",

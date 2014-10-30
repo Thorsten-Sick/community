@@ -21,11 +21,11 @@ class NetworkSMTP(Signature):
     severity = 3
     categories = ["smtp", "spam"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
-        if "smtp" in self.results["network"]:
-            if len(self.results["network"]["smtp"]) > 0:
-                return True
+    def on_complete(self):
+
+        if len(self.get_net_smtp()) > 0:
+            return True
 
         return False

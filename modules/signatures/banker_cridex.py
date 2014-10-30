@@ -23,14 +23,14 @@ class Cridex(Signature):
     categories = ["Banking", "Trojan"]
     families = ["Cridex"]
     authors = ["Robby Zeitfuchs", "@robbyFux"]
-    minimum = "0.5"
+    minimum = "1.2"
     references = ["http://stopmalvertising.com/rootkits/analysis-of-cridex.html",
                   "http://sempersecurus.blogspot.de/2012/08/cridex-analysis-using-volatility.html",
                   "http://labs.m86security.com/2012/03/the-cridex-trojan-targets-137-financial-organizations-in-one-go/",
                   "https://malwr.com/analysis/NDU2ZWJjZTIwYmRiNGVmNWI3MDUyMGExMGQ0MmVhYTY/",
                   "https://malwr.com/analysis/MTA5YmU4NmIwMjg5NDAxYjlhYzZiZGIwYjZkOTFkOWY/"]
 
-    def run(self):
+    def on_complete(self):
         indicators = [".*Local.QM.*",
                       ".*Local.XM.*"]
                       

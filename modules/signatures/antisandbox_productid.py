@@ -21,12 +21,11 @@ class GetProductID(Signature):
     severity = 3
     categories = ["anti-sandbox"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         if not call["api"].startswith("RegQueryValueEx"):
             return
 
-        if self.get_argument(call, "ValueName") == "ProductId":
+        if self.get_argument(call, "value") == "ProductId":
             return True

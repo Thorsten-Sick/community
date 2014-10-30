@@ -21,29 +21,29 @@ class InjectionCRT(Signature):
     severity = 2
     categories = ["injection"]
     authors = ["JoseMi Holguin", "nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.lastprocess = None
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
+        process = list(self.get_processes_by_pid(pid))[0]
         if process is not self.lastprocess:
             self.sequence = 0
             self.process_handle = 0
             self.lastprocess = process
 
-        if call["api"]  == "OpenProcess" and self.sequence == 0:
-            if self.get_argument(call, "ProcessId") != process["process_id"]:
+        if call["api"]  == "NtOpenProcess" and self.sequence == 0:
+            if self.get_argument(call, "process_identifier") != process["process_identifier"]:
                 self.sequence = 1
-                self.process_handle = call["return"]
+                self.process_handle = call["return_value"]
         elif call["api"] == "VirtualAllocEx" and self.sequence == 1:
-            if self.get_argument(call, "ProcessHandle") == self.process_handle:
+            if self.get_argument(call, "process_handle") == self.process_handle:
                 self.sequence = 2
         elif (call["api"] == "NtWriteVirtualMemory" or call["api"] == "WriteProcessMemory") and self.sequence == 2:
-            if self.get_argument(call, "ProcessHandle") == self.process_handle:
+            if self.get_argument(call, "process_handle") == self.process_handle:
                 self.sequence = 3
         elif call["api"].startswith("CreateRemoteThread") and self.sequence == 3:
-            if self.get_argument(call, "ProcessHandle") == self.process_handle:
+            if self.get_argument(call, "process_handle") == self.process_handle:
                 return True

@@ -23,9 +23,9 @@ class Drive2(Signature):
     categories = ["bot", "ddos"]
     families = ["drive2"]
     authors = ["jjones", "nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         regexp = "Mozilla/5.0 \(Windows NT [56].1; (WOW64; )?rv:(9|1[0-7]).0\) " \
                  "Gecko/20100101 Firefox/(9|1[0-7]).0|Mozilla/4.0 \(compatible; " \
                  "MSIE 8.0; Windows NT [56].1; (WOW64; )Trident/4.0; SLCC2; .NET " \
@@ -34,10 +34,10 @@ class Drive2(Signature):
                  "Version/([5-9]|1[0-2]).0[0-9]"
 
         drive_ua_re = re.compile(regexp)
-        if "network" in self.results:
-            for http in self.results["network"]["http"]:
-                if http["method"] == "POST" and (http["body"].startswith("req=") or http["body"].startswith("newd=1")) and drive_ua_re.search(http.get("user-agent", "")):
-                    self.data.append({"url" : http["uri"], "data" : http["body"]})
-                    return True
+
+        for http in self.get_net_http():
+            if http["method"] == "POST" and (http["body"].startswith("req=") or http["body"].startswith("newd=1")) and drive_ua_re.search(http.get("user-agent", "")):
+                self.data.append({"url" : http["uri"], "data" : http["body"]})
+                return True
 
         return False

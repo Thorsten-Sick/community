@@ -21,18 +21,17 @@ class NetworkBIND(Signature):
     severity = 2
     categories = ["bind"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.binds = []
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         if call["api"] != "bind":
             return
 
-        bind = "{0}:{1}".format(self.get_argument(call, "ip"), self.get_argument(call, "port"))
+        bind = "{0}:{1}".format(self.get_argument(call, "ip_address"), self.get_argument(call, "port"))
         if bind not in self.binds:
             self.binds.append(bind)
 

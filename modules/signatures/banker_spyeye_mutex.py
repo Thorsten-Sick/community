@@ -22,9 +22,9 @@ class SpyEyeMutexes(Signature):
     categories = ["banker"]
     families = ["spyeye"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             "zXeRY3a_PtW.*",
             "SPYNET",

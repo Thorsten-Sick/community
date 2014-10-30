@@ -21,12 +21,13 @@ class UPXCompressed(Signature):
     severity = 2
     categories = ["packer"]
     authors = ["Michael Boman", "nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
-        if "static" in self.results:
-            if "pe_sections" in self.results["static"]:
-                for section in self.results["static"]["pe_sections"]:
+    def on_complete(self):
+        results = self.get_results()
+        if "static" in results:
+            if "pe_sections" in results["static"]:
+                for section in results["static"]["pe_sections"]:
                     if section["name"].startswith("UPX"):
                         self.data.append({"section" : section})
                         return True

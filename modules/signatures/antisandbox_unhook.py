@@ -22,9 +22,8 @@ class Unhook(Signature):
     categories = ["anti-sandbox"]
     authors = ["nex"]
     minimum = "1.2"
-    evented = True
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         subcategory = self.check_argument_call(call,
                                                api="__anomaly__",
                                                name="Subcategory",

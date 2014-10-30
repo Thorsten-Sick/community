@@ -23,8 +23,7 @@ class BrowserStealer(Signature):
     severity = 3
     categories = ["infostealer"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     indicators = [
         re.compile(".*\\\\Mozilla\\\\Firefox\\\\Profiles\\\\.*\\\\.default\\\\signons\.sqlite$"),
@@ -43,22 +42,24 @@ class BrowserStealer(Signature):
 
     ]
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
+
+        process = list(self.get_processes_by_pid(pid))[0]
         # If the current process appears to be a browser, continue.
-        if process["process_name"].lower() in ("iexplore.exe", "firefox.exe", "chrome.exe"):
+        if process["process_path"].lower() in ("iexplore.exe", "firefox.exe", "chrome.exe"):
             return None
 
         # If the call category is not filesystem, continue.
-        if call["category"] != "filesystem":
+        if self.get_category(call) != "filesystem":
             return None
 
-        for argument in call["arguments"]:
-            if argument["name"] == "FileName":
-                for indicator in self.indicators:
-                    if indicator.match(argument["value"]):
-                        self.data.append({
-                            "file" : argument["value"],
-                            "process_id" : process["process_id"],
-                            "process_name" : process["process_name"]}
-                        )
-                        return True
+        fn = self.get_argument["file_name"]
+        if fn:
+            for indicator in self.indicators:
+                if indicator.match(fn):
+                    self.data.append({
+                        "file" : argument["value"],
+                        "process_id" : process["process_id"],
+                        "process_name" : process["process_name"]}
+                    )
+                    return True

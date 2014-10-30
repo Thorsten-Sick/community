@@ -21,17 +21,16 @@ class AntiVMServices(Signature):
     severity = 3
     categories = ["anti-vm"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.lastprocess = None
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         if call["api"].startswith("EnumServicesStatus"):
             return True
-            
+        process = self.get_processes_by_pid(pid)
         if process is not self.lastprocess:
             self.handle = None
             self.lastprocess = process
@@ -39,14 +38,14 @@ class AntiVMServices(Signature):
         if not self.handle:
             if call["api"].startswith("RegOpenKeyEx"):
                 correct = False
-                if self.get_argument(call,"SubKey") == "SYSTEM\\ControlSet001\\Services":
+                if self.get_argument(call,"regkey").lower() == "hkey_local_machine\\system\\controlset001\\services":
                     correct = True
                 else:
-                    self.handle = self.get_argument(call,"Handle")
+                    self.handle = self.get_argument(call,"key_handle")
 
                 if not correct:
                     self.handle = None
         else:
             if call["api"].startswith("RegEnumKeyEx"):
-                if self.get_argument(call,"Handle") == self.handle:
+                if self.get_argument(call,"key_handle") == self.handle:
                     return True

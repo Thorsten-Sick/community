@@ -21,9 +21,9 @@ class TorHiddenService(Signature):
     severity = 3
     categories = ["network", "anonimity", "tor"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*\\\\tor\\\\hidden_service\\\\private_key$",
             ".*\\\\tor\\\\hidden_service\\\\hostname$"

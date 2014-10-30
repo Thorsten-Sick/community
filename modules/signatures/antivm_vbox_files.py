@@ -21,9 +21,9 @@ class VBoxDetectFiles(Signature):
     severity = 3
     categories = ["anti-vm"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*VBoxDisp\.dll$",
             ".*VBoxHook\.dll$",

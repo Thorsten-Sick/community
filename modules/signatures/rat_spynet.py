@@ -28,9 +28,9 @@ class SpynetRat(Signature):
         "https://malwr.com/analysis/N2E3NWRiNDMyYjIwNGE0NTk3Y2E5NWMzN2UwZTVjMzI/",
         "https://malwr.com/analysis/N2Q2NWY0Y2MzOTM0NDEzNmE1MTdhOThiNTQxMzhiNzk/"   
     ]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*CYBERGATEUPDATE",
             ".*\(\(SpyNet\)\).*",

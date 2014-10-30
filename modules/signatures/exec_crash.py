@@ -21,10 +21,9 @@ class Crash(Signature):
     severity = 1
     categories = ["execution", "crash"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         res = self.check_argument_call(
             call,
             pattern=".*faultrep\.dll$",

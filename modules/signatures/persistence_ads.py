@@ -21,11 +21,12 @@ class ADS(Signature):
     severity = 3
     categories = ["persistence", "ads"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         result = False
-        for file_path in self.results["behavior"]["summary"]["files"]:
+        results = self.get_results()
+        for file_path in self.get_files(actions=["file_written"]):
             if len(file_path) <= 3:
                 continue
 

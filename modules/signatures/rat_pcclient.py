@@ -23,9 +23,9 @@ class PcClientMutexes(Signature):
     families = ["pcclient", "nex"]
     authors = ["threatlead"]
     references = ["https://malwr.com/analysis/MDIxN2NhMjg4MTg2NDY4MWIyNTE0Zjk5MTY1OGU4YzE/"]
-    minimum = "0.5"
+    minimum = "1.2"
     
-    def run(self):
+    def on_complete(self):
         indicators = [
             "BKLANG.*",
             "VSLANG.*",

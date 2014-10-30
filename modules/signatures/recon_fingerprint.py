@@ -21,27 +21,26 @@ class Fingerprint(Signature):
     severity = 3
     categories = ["recon"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.threshold = 3
         self.matches = 0
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         indicators = [
             "MachineGuid",
             "DigitalProductId",
             "SystemBiosDate"
         ]
 
-        if call["category"] != "registry":
+        if self.get_category(call) != "registry":
             return
 
         for argument in call["arguments"]:
             for indicator in indicators:
-                if argument["value"] == indicator:
+                if call["arguments"][argument] == indicator:
                     indicators.remove(indicator)
                     self.matches += 1
 

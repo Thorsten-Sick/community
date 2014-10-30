@@ -23,9 +23,9 @@ class AthenaHttp(Signature):
     categories = ["bot", "ddos"]
     families = ["athenahttp"]
     authors = ["jjones", "nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             "UPDATE__",
             "MAIN_.*",
@@ -42,10 +42,10 @@ class AthenaHttp(Signature):
 
         athena_http_re = re.compile("a=(%[A-Fa-f0-9]{2})+&b=[-A-Za-z0-9+/]+(%3[dD])*&c=(%[A-Fa-f0-9]{2})+")
 
-        if "network" in self.results:
-            for http in self.results["network"]["http"]:
-                if http["method"] == "POST" and athena_http_re.search(http["body"]):
-                    self.data.append({"url" : http["uri"], "data" : http["body"]})
-                    return True
+
+        for http in self.get_net_http():
+            if http["method"] == "POST" and athena_http_re.search(http["body"]):
+                self.data.append({"url" : http["uri"], "data" : http["body"]})
+                return True
 
         return False

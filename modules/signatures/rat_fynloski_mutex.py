@@ -23,9 +23,9 @@ class FynloskiMutexes(Signature):
     families = ["fynloski"]
     authors = ["threatlead"]
     references = ["https://malwr.com/analysis/ODVlOWEyNDU3NzBhNDE3OWJkZjE0ZjIxNTdiMzU1YmM/"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             "DC_MUTEX-.*"
         ]

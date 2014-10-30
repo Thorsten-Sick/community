@@ -21,7 +21,7 @@ class WineDetect(Signature):
     severity = 3
     categories = ["anti-emulation"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         return self.check_key(pattern="HKEY_CURRENT_USER\\Software\\Wine")

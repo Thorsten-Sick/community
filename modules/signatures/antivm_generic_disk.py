@@ -21,14 +21,13 @@ class DiskInformation(Signature):
     severity = 3
     categories = ["anti-vm"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.lastprocess = None
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         indicators = [
             "scsi0",
             "physicaldrive0"
@@ -39,19 +38,19 @@ class DiskInformation(Signature):
             "458752", # IOCTL_DISK_GET_DRIVE_GEOMETRY
             "315400" #IOCTL_SCSI_MINIPORT
         ]
-
+        process = self.get_processes_by_pid(pid)
         if process is not self.lastprocess:
             self.handle = None
             self.lastprocess = process
 
         if not self.handle:
             if call["api"] == "NtCreateFile":
-                file_name = self.get_argument(call, "FileName")
+                file_name = self.get_argument(call, "filepath")
                 for indicator in indicators:
                     if indicator in file_name.lower():
-                        self.handle = self.get_argument(call, "FileHandle")
+                        self.handle = self.get_argument(call, "file_handle")
         else:
             if call["api"] == "DeviceIoControl":
                 if self.get_argument(call, "DeviceHandle") == self.handle:
-                    if str(self.get_argument(call, "IoControlCode")) in ioctls:
+                    if str(self.get_argument(call, "control_code")) in ioctls:
                         return True

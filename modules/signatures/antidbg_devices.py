@@ -21,9 +21,9 @@ class AntiDBGDevices(Signature):
     severity = 3
     categories = ["anti-debug"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*SICE$",
             ".*SIWVID$",

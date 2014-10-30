@@ -21,10 +21,9 @@ class AntiDBGWindows(Signature):
     severity = 3
     categories = ["anti-debug"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         indicators = [
             "OLLYDBG",
             "WinDbgFrameClass",

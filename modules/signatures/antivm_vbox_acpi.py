@@ -21,14 +21,15 @@ class VBoxDetectACPI(Signature):
     severity = 3
     categories = ["anti-vm"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.lastprocess = None
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
+
+        process = self.get_processes_by_pid(pid)
         if process is not self.lastprocess:
             self.opened = False
             self.handle = ""
@@ -41,19 +42,19 @@ class VBoxDetectACPI(Signature):
             # Store the handle used to open the key.
             self.handle = ""
             # Check if the registry is HKEY_LOCAL_MACHINE.
-            if self.get_argument(call,"Registry") == "0x80000002":
+            if self.get_argument(call,"base_handle") == "0x80000002":
                 args_matched += 1
             # Check if the subkey opened is the correct one.
-            elif self.get_argument(call,"SubKey")[:14].upper() == "HARDWARE\\ACPI\\":
+            elif self.get_argument(call,"regkey")[:14].upper() == "HARDWARE\\ACPI\\":
                 # Since it could appear under different paths, check for all of them.
-                if self.get_argument(call,"SubKey")[14:18] in ["DSDT", "FADT", "RSDT"]:
-                    if self.get_argument(call,"SubKey")[18:] == "\\VBOX__":
+                if self.get_argument(call,"regkey")[14:18] in ["DSDT", "FADT", "RSDT"]:
+                    if self.get_argument(call,"regkey")[18:] == "\\VBOX__":
                         return True
                     else:
                         args_matched += 1
             # Store the generated handle.
             else:
-                self.handle = self.get_argument(call,"Handle")
+                self.handle = self.get_argument(call,"base_handle")
             
             # If both arguments are matched, I consider the key to be successfully opened.
             if args_matched == 2:
@@ -66,9 +67,9 @@ class VBoxDetectACPI(Signature):
 
             # Verify the arguments.
             args_matched = 0
-            if self.get_argument(call,"Handle") == self.handle:
+            if self.get_argument(call,"base_handle") == self.handle:
                 args_matched += 1
-            elif self.get_argument(call,"Name") == "VBOX__":
+            elif self.get_argument(call,"key_name") == "VBOX__":
                 args_matched += 1
 
             # Finally, if everything went well, I consider the signature as matched.

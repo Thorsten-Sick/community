@@ -21,9 +21,9 @@ class InstallsWinpcap(Signature):
     severity = 3
     categories = ["sniffer"]
     authors = ["Thomas Birn", "nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*\\\\packet\.dll$",
             ".*\\\\npf\.sys$",

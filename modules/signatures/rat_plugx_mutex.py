@@ -23,9 +23,9 @@ class PlugxMutexes(Signature):
     families = ["plugx"]
     authors = ["threatlead", "nex"]
     references = ["https://malwr.com/analysis/YTZjYmUwMzNlNzkwNGU5YmIxNDQwYTcyYjFkYWI0NWE/"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             "DoInstPrepare",
         ]

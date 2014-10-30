@@ -21,7 +21,7 @@ class CreatesAutorunInf(Signature):
     severity = 2
     categories = ["spreading"]
     authors = ["Thomas Birn", "nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         return self.check_file(pattern=".*\\\\autorun\.inf$", regex=True)

@@ -25,9 +25,9 @@ class Flame(Signature):
     categories = ["targeted"]
     families = ["flame", "skywiper"]
     authors = ["nex"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             "__fajb.*",
             "DVAAccessGuard.*",

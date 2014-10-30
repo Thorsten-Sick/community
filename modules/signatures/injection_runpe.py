@@ -21,14 +21,14 @@ class InjectionRUNPE(Signature):
     severity = 2
     categories = ["injection"]
     authors = ["glysbaysb"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
     def __init__(self, *args, **kwargs):
         Signature.__init__(self, *args, **kwargs)
         self.lastprocess = None
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
+        process = self.get_processes_by_pid(pid)
         if process is not self.lastprocess:
             self.sequence = 0
             self.process_handle = 0
@@ -36,17 +36,17 @@ class InjectionRUNPE(Signature):
 
         if call["api"]  == "CreateProcessInternalW" and self.sequence == 0:
             self.sequence = 1
-            self.process_handle = self.get_argument(call, "ProcessHandle")
-            self.thread_handle = self.get_argument(call, "ThreadHandle")
+            self.process_handle = self.get_argument(call, "process_handle")
+            self.thread_handle = self.get_argument(call, "thread_handle")
         elif call["api"] == "NtUnmapViewOfSection" and self.sequence == 1:
-            if self.get_argument(call, "ProcessHandle") == self.process_handle:
+            if self.get_argument(call, "process_handle") == self.process_handle:
                 self.sequence = 2
         elif (call["api"] == "NtWriteVirtualMemory" or call["api"] == "WriteProcessMemory" or call["api"] == "NtMapViewOfSection") and self.sequence == 2:
-            if self.get_argument(call, "ProcessHandle") == self.process_handle:
+            if self.get_argument(call, "process_handle") == self.process_handle:
                 self.sequence = 3
         elif call["api"].startswith("SetThreadContext") and self.sequence == 3:
-            if self.get_argument(call, "ThreadHandle") == self.thread_handle:
+            if self.get_argument(call, "thread_handle") == self.thread_handle:
                 self.sequence = 4
         elif call["api"] == "NtResumeThread" and self.sequence == 4:
-            if self.get_argument(call, "ThreadHandle") == self.thread_handle:
+            if self.get_argument(call, "thread_handle") == self.thread_handle:
                 return True

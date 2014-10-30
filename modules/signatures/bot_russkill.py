@@ -22,6 +22,7 @@ class Ruskill(Signature):
     alert = True
     categories = ["bot", "ddos"]
     authors = ["JoseMi Holguin", "nex"]
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         return self.check_mutex(pattern="FvLQ49IlzIyLjj6m")

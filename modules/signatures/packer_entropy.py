@@ -21,17 +21,18 @@ class PackerEntropy(Signature):
     severity = 2
     categories = ["packer"]
     authors = ["Robby Zeitfuchs", "nex"]
-    minimum = "0.6"
+    minimum = "1.2"
     references = ["http://www.forensickb.com/2013/03/file-entropy-explained.html", 
                   "http://virii.es/U/Using%20Entropy%20Analysis%20to%20Find%20Encrypted%20and%20Packed%20Malware.pdf"]
 
-    def run(self):
-        if "static" in self.results:
-            if "pe_sections" in self.results["static"]:
+    def on_complete(self):
+        results = self.get_results()
+        if "static" in results:
+            if "pe_sections" in results["static"]:
                 total_compressed = 0
                 total_pe_data = 0
                 
-                for section in self.results["static"]["pe_sections"]:
+                for section in results["static"]["pe_sections"]:
                     total_pe_data += int(section["size_of_data"], 16)
                      
                     if section["entropy"] > 6.8:

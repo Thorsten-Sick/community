@@ -21,17 +21,16 @@ class Tor(Signature):
     severity = 3
     categories = ["network", "anonimity", "tor"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         if self.check_argument_call(call,
                                     pattern="Tor Win32 Service",
                                     api="CreateServiceA",
                                     category="services"):
             return True
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*\\\\tor\\\\cached-certs$",
             ".*\\\\tor\\\\cached-consensus$",

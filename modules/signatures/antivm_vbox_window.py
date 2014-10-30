@@ -21,10 +21,9 @@ class VBoxDetectWindow(Signature):
     severity = 3
     categories = ["anti-vm"]
     authors = ["nex"]
-    minimum = "1.0"
-    evented = True
+    minimum = "1.2"
 
-    def on_call(self, call, process):
+    def on_call(self, call, pid, tid):
         indicators = [
             "VBoxTrayToolWndClass",
             "VBoxTrayToolWnd"
@@ -32,5 +31,5 @@ class VBoxDetectWindow(Signature):
 
         for indicator in indicators:
             if self.check_argument_call(call, pattern=indicator, category="window"):
-                self.data.append({"window" : indicator})
+                self.data.append({"window": indicator})
                 return True

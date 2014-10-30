@@ -21,10 +21,10 @@ class ZeusURL(Signature):
     severity = 3
     categories = ["banker"]
     authors = ["Robby Zeitfuchs"]
-    minimum = "0.5"
+    minimum = "1.2"
     references = ["https://zeustracker.abuse.ch/blocklist.php?download=compromised"]
 
-    def run(self):
+    def on_complete(self):
         indicators = [
             ".*\/config\.bin",                                  
             ".*\/gate\.php",                               

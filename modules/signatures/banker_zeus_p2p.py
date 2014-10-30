@@ -23,7 +23,7 @@ class ZeusP2P(Signature):
     categories = ["banker"]
     families = ["zeus"]
     authors = ["Robby Zeitfuchs"]
-    minimum = "0.5"
+    minimum = "1.2"
     references = ["https://malwr.com/analysis/NmNhODg5ZWRkYjc0NDY0M2I3YTJhNDRlM2FlOTZiMjA/", 
                   "https://malwr.com/analysis/MmMwNDJlMTI0MTNkNGFjNmE0OGY3Y2I5MjhiMGI1NzI/",
                   "https://malwr.com/analysis/MzY5ZTM2NzZhMzI3NDY2YjgzMjJiODFkODZkYzIwYmQ/",
@@ -32,12 +32,12 @@ class ZeusP2P(Signature):
                   "https://www.virustotal.com/de/file/d3cf49a7ac726ee27eae9d29dee648e34cb3e8fd9d494e1b347209677d62cdf9/analysis/#behavioural-info",
                   "https://www.virustotal.com/de/file/301fcadf53e6a6167e559c84d6426960af8626d12b2e25aa41de6dce511d0568/analysis/#behavioural-info"]
 
-    def run(self):
+    def on_complete(self):
         # Check zeus synchronization-mutex.
         # Regexp pattern for zeus synchronization-mutex such as for example:
         # 2CCB0BFE-ECAB-89CD-0261-B06D1C10937F
         exp = re.compile(".*[A-Z0-9]{8}-([A-Z0-9]{4}-){3}[A-Z0-9]{12}", re.IGNORECASE)
-        mutexes = self.results["behavior"]["summary"]["mutexes"]
+        mutexes = self.get_mutexes()
         
         count = 0
         for mutex in mutexes:
@@ -53,10 +53,10 @@ class ZeusP2P(Signature):
         # TODO: this might be faulty without checking whether the destination
         # IP is really valid.
         count = 0
-        if "network" in self.results:
-            for udp in self.results["network"]["udp"]:
-                if udp["dport"] > 1024:
-                    count += 1
+
+        for udp in self.get_net_udp():
+            if udp["dport"] > 1024:
+                count += 1
             
         if count < 4:
             return False

@@ -21,9 +21,9 @@ class BuildLangID(Signature):
     severity = 2
     authors = ["Benjamin K.", "Kevin R.", "nex"]
     categories = ["origin"]
-    minimum = "0.5"
+    minimum = "1.2"
 
-    def run(self):
+    def on_complete(self):
         languages = [
             {"language" : "Arabic", "code" : "0x0401"},
             {"language" : "Bulgarian", "code" : "0x0402"},
@@ -37,10 +37,10 @@ class BuildLangID(Signature):
             {"language" : "Simplified Chinese", "code" : "0x0804"},
             {"language" : "Hebrew", "code" : "0x040d"}
         ]
-
-        if "static" in self.results:
-            if "pe_versioninfo" in self.results["static"]:
-                for info in self.results["static"]["pe_versioninfo"]:
+        results = self.get_results()
+        if "static" in results:
+            if "pe_versioninfo" in results["static"]:
+                for info in results["static"]["pe_versioninfo"]:
                     if info["name"] == "Translation":
                         lang, charset = info["value"].strip().split(" ")
                         for language in languages:

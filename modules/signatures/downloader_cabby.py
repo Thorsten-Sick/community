@@ -22,11 +22,11 @@ class DownloaderCabby(Signature):
     categories = ["downloader"]
     families = ["downloader"]
     authors = ["Robby Zeitfuchs"]
-    minimum = "0.5"
+    minimum = "1.2"
     references = ["https://malwr.com/analysis/MmM0NDA5NWU5NjVmNDE5OGJmZmQ1MTdiZWVkMmU2ZDE/", 
                   "https://malwr.com/analysis/MmNmM2YxOWJhY2QxNDYyYTk3Y2IyNzI4NjQ0ZTEzOGY/"]
 
-    def run(self):            
+    def on_complete(self):
             match_mutex = self.check_mutex(pattern=".*[0-9]{8}", regex=True)          
             
             if match_mutex:
